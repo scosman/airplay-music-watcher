@@ -18,12 +18,21 @@ type AirplayCommandLineAction struct {
 }
 
 type AirplayMusicActionRunner struct {
-	Actions []*AirplayCommandLineAction `json:"actions"`
+	Actions                []*AirplayCommandLineAction `json:"actions"`
+	lastKnownStateOfDevice map[string]LastKnownState
 }
 
 const (
 	ACTION_NAME_START_PLAYING ActionName = "start_playing"
 	ACTION_NAME_END_PLAYING   ActionName = "end_playing"
+)
+
+type LastKnownState string
+
+const (
+	LAST_KNOWN_STATE_UNKNOWN LastKnownState = "unknown"
+	LAST_KNOWN_STATE_PLAYING LastKnownState = "playing"
+	LAST_KNOWN_STATE_STOPPED LastKnownState = "stopped"
 )
 
 // func DefaultParams(service string) *QueryParam {
@@ -43,6 +52,7 @@ func NewAirplayMusicActionRunner(configFilePath string) (*AirplayMusicActionRunn
 			return nil, errors.New("Invalid action name")
 		}
 	}
+	parsedRunner.lastKnownStateOfDevice = make(map[string]LastKnownState)
 
 	return &parsedRunner, nil
 }
@@ -51,12 +61,26 @@ func (r *AirplayMusicActionRunner) RunActionForDeviceState(deviceName string, is
 	for _, action := range r.Actions {
 		if action.DeviceName == deviceName {
 			if (isPlaying && action.ActionName == ACTION_NAME_START_PLAYING) || (!isPlaying && action.ActionName == ACTION_NAME_END_PLAYING) {
-				log.Printf("Running command: %v %v", action.Command, action.CommandArgs)
-				cmd := exec.Command(action.Command, action.CommandArgs)
-				if err := cmd.Run(); err != nil {
-					log.Printf("Error running command: %v %v", action.Command, action.CommandArgs)
-				}
+				r.runActionForDevice(deviceName, isPlaying, *action)
 			}
 		}
+	}
+}
+
+func (r *AirplayMusicActionRunner) runActionForDevice(deviceName string, isPlaying bool, action AirplayCommandLineAction) {
+	priorState := r.lastKnownStateOfDevice[deviceName]
+	if (priorState == LAST_KNOWN_STATE_PLAYING && isPlaying) || (priorState == LAST_KNOWN_STATE_STOPPED && !isPlaying) {
+		// we already send this, can skip
+		return
+	}
+	if isPlaying {
+		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_PLAYING
+	} else {
+		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_STOPPED
+	}
+	log.Printf("Running command: %v %v", action.Command, action.CommandArgs)
+	cmd := exec.Command(action.Command, action.CommandArgs)
+	if err := cmd.Run(); err != nil {
+		log.Printf("Error running command: %v %v", action.Command, action.CommandArgs)
 	}
 }
