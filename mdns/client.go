@@ -190,7 +190,8 @@ func newClient(v4 bool, v6 bool) (*client, error) {
 	if v6 {
 		mconn6, err = net.ListenMulticastUDP("udp6", nil, ipv6Addr)
 		if err != nil {
-			log.Printf("[ERR] mdns: Failed to bind to udp6 port: %v", err)
+			log.Printf("[ERR] mdns: Failed to bind to udp6 port: %v. Network may not support IPv6. Will disable IPv6", err)
+			uconn6 = nil
 		}
 	}
 
@@ -200,7 +201,7 @@ func newClient(v4 bool, v6 bool) (*client, error) {
 
 	c := &client{
 		use_ipv4:          v4,
-		use_ipv6:          v6,
+		use_ipv6:          v6 && mconn6 != nil,
 		ipv4MulticastConn: mconn4,
 		ipv6MulticastConn: mconn6,
 		ipv4UnicastConn:   uconn4,
@@ -447,9 +448,6 @@ func (c *client) recv(l *net.UDPConn, msgCh chan *dns.Msg) {
 		if err := msg.Unpack(buf[:n]); err != nil {
 			log.Printf("[ERR] mdns: Failed to unpack packet: %v", err)
 			continue
-		} else {
-			// TODO
-			//fmt.Printf("Got new entryLoop: %v\n", msg)
 		}
 		select {
 		case msgCh <- msg:
