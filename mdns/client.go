@@ -329,7 +329,6 @@ func (c *client) query(params *QueryParam) error {
 					inp.Info = strings.Join(rr.Txt, "|")
 					inp.InfoFields = rr.Txt
 					inp.hasTXT = true
-					//fmt.Printf("TXT Entry: %v\nExtra: %v\n", resp.Answer, resp.Extra)
 					for _, answer := range resp.Answer {
 						hostName := answer.Header().Name
 						if strings.Contains(hostName, "._airplay._tcp.local.") {
@@ -394,8 +393,6 @@ func (c *client) query(params *QueryParam) error {
 				m.SetQuestion(inp.Name, dns.TypePTR)
 				m.RecursionDesired = false
 
-				// TODO
-				//log.Print("skipping sending up entry")
 				if err := c.sendQuery(m); err != nil {
 					log.Printf("[ERR] mdns: Failed to query instance %s: %v", inp.Name, err)
 				}

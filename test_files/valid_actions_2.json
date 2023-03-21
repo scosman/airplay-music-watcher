@@ -1,0 +1,16 @@
+{
+    "actions": [
+        {
+            "device_name": "Stereo",
+            "action": "start_playing",
+            "command": "echo",
+            "command_args": "'value to echo stereo start'"
+        },
+        {
+            "device_name": "Stereo",
+            "action": "end_playing",
+            "command": "echo",
+            "command_args": "'value to echo for stereo end'"
+        }
+    ]
+}

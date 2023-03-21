@@ -2,14 +2,28 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math"
+	"os"
 
+	"github.com/scosman/airplay-music-watcher/actions"
 	"github.com/scosman/airplay-music-watcher/mdns"
 )
 
 const DeviceSupportsRelayBitmask = 0x800
 
 func main() {
+	args := os.Args
+	if len(args) != 2 {
+		// first arg is program path, so 2 == 1...
+		log.Fatal("command requires exactly 1 arg -- the path to the json config file")
+	}
+	jsonFilePath := args[1]
+	actionRunner, err := actions.NewAirplayMusicActionRunner(jsonFilePath)
+	if err != nil {
+		log.Fatalf("Error parsing json config file: %v", err)
+	}
+
 	entriesCh := make(chan *mdns.AirplayFlagsEntry, 4)
 	defer close(entriesCh)
 	go func() {
@@ -21,6 +35,7 @@ func main() {
 			// https://github.com/openairplay/airplay-spec/blob/master/src/status_flags.md
 			isPlaying := (DeviceSupportsRelayBitmask & entry.Flags) > 0
 			fmt.Printf("Airplay Device \"%s\" event, is playing: %t\n", entry.DeviceName, isPlaying)
+			actionRunner.RunActionForDeviceState(entry.DeviceName, isPlaying)
 		}
 	}()
 
