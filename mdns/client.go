@@ -42,9 +42,10 @@ func trimDot(s string) string {
 }
 
 type AirplayFlagsEntry struct {
-	Name     string
-	RawFlags string
-	Flags    uint64
+	HostName   string
+	DeviceName string
+	RawFlags   string
+	Flags      uint64
 }
 
 // ServiceEntry is returned after we query for a service
@@ -329,7 +330,8 @@ func (c *client) query(params *QueryParam) error {
 					inp.hasTXT = true
 					//fmt.Printf("TXT Entry: %v\nExtra: %v\n", resp.Answer, resp.Extra)
 					for _, answer := range resp.Answer {
-						if strings.Contains(answer.Header().Name, "._airplay._tcp.local.") {
+						hostName := answer.Header().Name
+						if strings.Contains(hostName, "._airplay._tcp.local.") {
 							for _, txt := range rr.Txt {
 								if strings.Index(txt, "flags=") == 0 {
 									// Index 8 removes "flags=0x"
@@ -338,10 +340,13 @@ func (c *client) query(params *QueryParam) error {
 									if err != nil {
 										continue
 									}
+									firstPeriodIndex := strings.Index(hostName, ".")
+									deviceName := hostName[:firstPeriodIndex]
 									airplayFlagsEvent := &AirplayFlagsEntry{
-										Name:     answer.Header().Name,
-										RawFlags: txt,
-										Flags:    flagsInt,
+										HostName:   hostName,
+										RawFlags:   txt,
+										Flags:      flagsInt,
+										DeviceName: deviceName,
 									}
 
 									// Send this flags event back to client
