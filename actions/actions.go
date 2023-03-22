@@ -6,15 +6,15 @@ import (
 	"io/ioutil"
 	"log"
 	"os/exec"
+	"runtime"
 )
 
 type ActionName string
 
 type AirplayCommandLineAction struct {
-	DeviceName  string     `json:"device_name"`
-	Command     string     `json:"command"`
-	CommandArgs string     `json:"command_args"`
-	ActionName  ActionName `json:"action"`
+	DeviceName string     `json:"device_name"`
+	Command    string     `json:"command"`
+	ActionName ActionName `json:"action"`
 }
 
 type AirplayMusicActionRunner struct {
@@ -58,6 +58,17 @@ func NewAirplayMusicActionRunner(configFilePath string) (*AirplayMusicActionRunn
 }
 
 func (r *AirplayMusicActionRunner) RunActionForDeviceState(deviceName string, isPlaying bool) {
+	priorState := r.lastKnownStateOfDevice[deviceName]
+	if (priorState == LAST_KNOWN_STATE_PLAYING && isPlaying) || (priorState == LAST_KNOWN_STATE_STOPPED && !isPlaying) {
+		// we already sent this, can skip
+		return
+	}
+	if isPlaying {
+		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_PLAYING
+	} else {
+		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_STOPPED
+	}
+
 	for _, action := range r.Actions {
 		if action.DeviceName == deviceName {
 			if (isPlaying && action.ActionName == ACTION_NAME_START_PLAYING) || (!isPlaying && action.ActionName == ACTION_NAME_END_PLAYING) {
@@ -68,19 +79,14 @@ func (r *AirplayMusicActionRunner) RunActionForDeviceState(deviceName string, is
 }
 
 func (r *AirplayMusicActionRunner) runActionForDevice(deviceName string, isPlaying bool, action AirplayCommandLineAction) {
-	priorState := r.lastKnownStateOfDevice[deviceName]
-	if (priorState == LAST_KNOWN_STATE_PLAYING && isPlaying) || (priorState == LAST_KNOWN_STATE_STOPPED && !isPlaying) {
-		// we already send this, can skip
-		return
+	log.Printf("Running command: %s\n", action.Command)
+	cmd := exec.Command("sh", "-c", action.Command)
+	if runtime.GOOS == "windows" {
+		// Need someome to test this. From stack overflow, but no windows box...
+		cmd = exec.Command("C:\\Windows\\System32\\cmd.exe", "/c", action.Command)
 	}
-	if isPlaying {
-		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_PLAYING
-	} else {
-		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_STOPPED
-	}
-	log.Printf("Running command: %v %v", action.Command, action.CommandArgs)
-	cmd := exec.Command(action.Command, action.CommandArgs)
+
 	if err := cmd.Run(); err != nil {
-		log.Printf("Error running command: %v %v", action.Command, action.CommandArgs)
+		log.Printf("Error running command: %s\n", action.Command)
 	}
 }

@@ -20,11 +20,11 @@ func TestActionsParseValid(t *testing.T) {
 		t.Fatal("parse error -- wrong count")
 	}
 	first := actions.Actions[0]
-	if first.DeviceName != "device1" || first.Command != "echo" || first.ActionName != "start_playing" {
+	if first.DeviceName != "device1" || first.Command != "echo 'value to echo device 1'" || first.ActionName != "start_playing" {
 		t.Fatal("didn't parse first action")
 	}
 	second := actions.Actions[1]
-	if second.DeviceName != "Stereo" || second.Command != "echo" || second.ActionName != "end_playing" {
+	if second.DeviceName != "Stereo" || second.Command != "echo 'value to echo for stereo'" || second.ActionName != "end_playing" {
 		t.Fatal("didn't parse second action")
 	}
 }

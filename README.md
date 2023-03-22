@@ -15,7 +15,7 @@ If you start or stop playing it sends the commands immediately. If you simply pa
 ## Setup
 
 1) Download the [appriopiate binary](https://github.com/scosman/airplay-music-watcher/blob/main/README.md#which-binary-should-i-download) for your system from the latest release.
-2) Create a config file using JSON format below. You can add as many entries as you want. The device_name and action are used to identify the trigger, and the command and command_args are what is run when the event is triggered
+2) Create a config file using JSON format below. You can add as many entries as you want. The device_name and action are used to identify the trigger, and the command is run when the event is triggered
 3) Run the server via command line and ensure it works as you want it to: `./airplay-music-watcher ./your_json_config.json`
 4) Setup the command to run on boot using systemd, launchd, or your daemon manager of choice!
 
@@ -40,8 +40,7 @@ Fields:
 
  - Device name: the name of the Airplay device, as you have setup in the Apple Home app. Case sensitive.
  - Action: either "start_playing" or "end_playing"
- - Command: a command line app that will be run when the event triggets (examples: "echo", "curl")
- - Command args: the string of args that will be passed to that command
+ - Command: a command line that will be run when the event triggets (examples: "echo hello", "curl http://...")
 
 ```
 {
@@ -49,14 +48,12 @@ Fields:
         {
             "device_name": "Stereo",
             "action": "start_playing",
-            "command": "say",
-            "command_args": "'stereo starting'"
+            "command": "say 'stereo starting'"
         },
         {
             "device_name": "Stereo",
             "action": "end_playing",
-            "command": "say",
-            "command_args": "'stereo stopping'"
+            "command": "say 'stereo stopping'"
         }
     ]
 }

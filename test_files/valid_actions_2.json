@@ -3,14 +3,12 @@
         {
             "device_name": "Stereo",
             "action": "start_playing",
-            "command": "echo",
-            "command_args": "'value to echo stereo start'"
+            "command": "echo 'starting'"
         },
         {
             "device_name": "Stereo",
             "action": "end_playing",
-            "command": "echo",
-            "command_args": "'value to echo for stereo end'"
+            "command": "echo 'ending'"
         }
     ]
 }

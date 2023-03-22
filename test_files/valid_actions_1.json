@@ -3,14 +3,12 @@
         {
             "device_name": "device1",
             "action": "start_playing",
-            "command": "echo",
-            "command_args": "'value to echo device 1'"
+            "command": "echo 'value to echo device 1'"
         },
         {
             "device_name": "Stereo",
             "action": "end_playing",
-            "command": "echo",
-            "command_args": "'value to echo for stereo'"
+            "command": "echo 'value to echo for stereo'"
         }
     ]
 }
