@@ -34,7 +34,14 @@ Releases have several builds, and you'll need the right one for your machine:
 
 ## JSON Config File Example
 
-This json file would say "stereo starting" when the Airplay device named "Stereo" starts playing, and say "stereo stopping" when it stops.
+This example json file would say "stereo starting" when the Airplay device named "Stereo" starts playing, and say "stereo stopping" when it stops.
+
+Fields:
+
+ - Device name: the name of the Airplay device, as you have setup in the Apple Home app. Case sensitive.
+ - Action: either "start_playing" or "end_playing"
+ - Command: a command line app that will be run when the event triggets (examples: "echo", "curl")
+ - Command args: the string of args that will be passed to that command
 
 ```
 {
