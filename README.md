@@ -53,3 +53,15 @@ This json file would say "stereo starting" when the Airplay device named "Stereo
     ]
 }
 ```
+
+## How this works
+
+This process monitors UDP traffic on your network for mdns records from Airplay devices. Certain airplay mdns TXT records include a [bitmask](https://github.com/openairplay/airplay-spec/blob/master/src/status_flags.md) which let's us infer the device's state (playing or not).
+
+It doesn't require any special permissions, just network access. It's simply reading un-encrypted multicast UDP (mdns) traffic. It needs to be run on the same network as the device in question.
+
+The mdns monitoring and parsing code was extracted from: https://github.com/hashicorp/mdns
+
+## Licence
+
+MIT Licence
