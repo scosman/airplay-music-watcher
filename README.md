@@ -1,5 +1,6 @@
 [![Build and Test](https://github.com/scosman/airplay-music-watcher/actions/workflows/test.yml/badge.svg)](https://github.com/scosman/airplay-music-watcher/actions/workflows/test.yml)
 [![Format and Vet](https://github.com/scosman/airplay-music-watcher/actions/workflows/format_check.yml/badge.svg)](https://github.com/scosman/airplay-music-watcher/actions/workflows/format_check.yml)
+[![Release Binary Build](https://github.com/scosman/airplay-music-watcher/actions/workflows/release.yml/badge.svg)](https://github.com/scosman/airplay-music-watcher/actions/workflows/release.yml)
 
 # Airplay Music Watcher
 
