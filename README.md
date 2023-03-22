@@ -24,8 +24,8 @@ Releases have several builds, and you'll need the right one for your machine.
 
  - Raspberry Pi: linux-arm
  - Mac with M1/M2/M* processor: darwin-arm64
- - Mac with non M processor: darwin-386
- - Windows: windows-386
+ - Older Mac with non M processor: darwin-amd64
+ - Windows: windows-amd64, and if it's old maybe windows-386
  - Windows with arm processor: I don't believe you
  - Linux: you got this
  
