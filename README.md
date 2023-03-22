@@ -18,6 +18,19 @@ If you start or stop playing it sends the commands immediately. If you simply pa
 3) Run the server via command line and ensure it works as you want it to: `./airplay-music-watcher ./your_json_config.json`
 4) Setup the command to run on boot using systemd, launchd, or your daemon manager of choice!
 
+## Which Binary Should I Download?
+
+Releases have several builds, and you'll need the right one for your machine.
+
+ - Raspberry Pi: linux-arm
+ - Mac with M1/M2/M* processor: darwin-arm64
+ - Mac with non M processor: darwin-386
+ - Windows: windows-386
+ - Windows with arm processor: I don't believe you
+ - Linux: you got this
+ 
+ Releases can be found here: https://github.com/scosman/airplay-music-watcher/releases 
+
 ## JSON Config File Example
 
 This json file would say "stereo starting" when the Airplay device named "Stereo" starts playing, and say "stereo stopping" when it stops.
