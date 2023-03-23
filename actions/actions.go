@@ -7,6 +7,7 @@ import (
 	"log"
 	"os/exec"
 	"runtime"
+	"sync"
 )
 
 type ActionName string
@@ -20,6 +21,7 @@ type AirplayCommandLineAction struct {
 type AirplayMusicActionRunner struct {
 	Actions                []*AirplayCommandLineAction `json:"actions"`
 	lastKnownStateOfDevice map[string]LastKnownState
+	lastKnownMutex         sync.Mutex
 }
 
 const (
@@ -57,18 +59,28 @@ func NewAirplayMusicActionRunner(configFilePath string) (*AirplayMusicActionRunn
 	return &parsedRunner, nil
 }
 
-func (r *AirplayMusicActionRunner) RunActionForDeviceState(deviceName string, isPlaying bool) {
+func (r *AirplayMusicActionRunner) checkAndSetAlreadyDispatched(deviceName string, isPlaying bool) bool {
+	targetState := LAST_KNOWN_STATE_PLAYING
+	if !isPlaying {
+		targetState = LAST_KNOWN_STATE_STOPPED
+	}
+
+	r.lastKnownMutex.Lock()
+	defer r.lastKnownMutex.Unlock()
+
 	priorState := r.lastKnownStateOfDevice[deviceName]
-	if (priorState == LAST_KNOWN_STATE_PLAYING && isPlaying) || (priorState == LAST_KNOWN_STATE_STOPPED && !isPlaying) {
+	if priorState == targetState {
+		return true
+	}
+	r.lastKnownStateOfDevice[deviceName] = targetState
+	return false
+}
+
+func (r *AirplayMusicActionRunner) RunActionForDeviceState(deviceName string, isPlaying bool) {
+	if r.checkAndSetAlreadyDispatched(deviceName, isPlaying) {
 		// we already sent this, can skip
 		return
 	}
-	if isPlaying {
-		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_PLAYING
-	} else {
-		r.lastKnownStateOfDevice[deviceName] = LAST_KNOWN_STATE_STOPPED
-	}
-
 	for _, action := range r.Actions {
 		if action.DeviceName == deviceName {
 			if (isPlaying && action.ActionName == ACTION_NAME_START_PLAYING) || (!isPlaying && action.ActionName == ACTION_NAME_END_PLAYING) {
