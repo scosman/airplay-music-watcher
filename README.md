@@ -59,6 +59,8 @@ Fields:
 }
 ```
 
+For homebridge users, this works well with the [homebridge-config-ui-x API](https://github.com/oznu/homebridge-config-ui-x/wiki/API-Reference). Use curl to call the API and enable/disable smart home devices (like a smart plug controlling your vintage audio amp).
+
 ## How this works
 
 This process monitors UDP traffic on your network for mdns records from Airplay devices. Certain airplay mdns TXT records include a [bitmask](https://github.com/openairplay/airplay-spec/blob/master/src/status_flags.md) which let's us infer the device's state (playing or not).
