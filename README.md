@@ -8,6 +8,13 @@ A golang service which watches for devices starting or stopping playing airplay 
 
 This is primarily useful for home automations. For example: detecting music playing on an airplay dongle, and turning on your receiver (via a smart switch, or IR command). I use it with homebridge and an IR blaster to turn a nice vintage receiver on an off for airplay.
 
+## Project progress
+
+ - This had been tested on MacOS and Linux. Windows builds are included in the releases, but [have not yet been tested](https://github.com/scosman/airplay-music-watcher/issues/1).
+ - This has been tested with several Airplay 2 devices, including HomePods and a Belkin Soundform. It [has not been tested with Airplay 1 devices](https://github.com/scosman/airplay-music-watcher/issues/2).
+
+If you find issues (or can confirm the platforms above work), please file a GitHub issue. 
+
 ## Note on event timing
 
 If you start or stop playing it sends the commands immediately. If you simply pause, the stop command comes eventually but not instantly. From experimentation, pausing triggers a stop event after approximately 8 minutes.
