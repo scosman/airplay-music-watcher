@@ -10,8 +10,8 @@ This is primarily useful for home automations. For example: detecting music play
 
 ## Project progress
 
- - This had been tested on MacOS and Linux. Windows builds are included in the releases, but [have not yet been tested](https://github.com/scosman/airplay-music-watcher/issues/1).
- - This has been tested with several Airplay 2 devices, including HomePods and a Belkin Soundform. It [has not been tested with Airplay 1 devices](https://github.com/scosman/airplay-music-watcher/issues/2).
+ - **OS Support:** This had been tested on MacOS and Linux. Windows builds are included in the releases and may work, but [have not yet been tested](https://github.com/scosman/airplay-music-watcher/issues/1).
+ - **Device Support:** This has been tested with several Airplay 2 devices, including HomePod Mini, AppleTV, a Belkin Soundform and a Vizio TV. It [has not been tested with Airplay 1 devices](https://github.com/scosman/airplay-music-watcher/issues/2).
 
 If you find issues (or can confirm the platforms above work), please file a GitHub issue. 
 
