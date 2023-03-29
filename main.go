@@ -10,6 +10,8 @@ import (
 )
 
 const DeviceSupportsRelayBitmask = 0x800
+const ReceiverSessionIsActiveBitmask = 0x20000
+const DeviceIsPlayingBitmask = DeviceSupportsRelayBitmask | ReceiverSessionIsActiveBitmask
 
 func main() {
 	args := os.Args
@@ -28,11 +30,12 @@ func main() {
 	go func() {
 		for entry := range entriesCh {
 			// We're interested if the device is playing or not. From experimentation the 11th bit
-			// AKA DeviceSupportsRelay is the most relable way of checking this
+			// AKA DeviceSupportsRelay is the most relable way of checking this for HomePod and Belkin
+			// Soundform, while the 17th bit is more reliable for AppleTV.
 			// It stays on after you pause for about 8 mins, but does flip off eventually.
 			// If you manually disconnect airplay from a device, you get the off immediately
 			// https://github.com/openairplay/airplay-spec/blob/master/src/status_flags.md
-			isPlaying := (DeviceSupportsRelayBitmask & entry.Flags) > 0
+			isPlaying := (DeviceIsPlayingBitmask & entry.Flags) > 0
 			actionRunner.RunActionForDeviceState(entry.DeviceName, isPlaying)
 		}
 	}()
