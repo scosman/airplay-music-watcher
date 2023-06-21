@@ -6,7 +6,7 @@
 
 A golang service which watches for devices starting or stopping playing airplay audio. When a device starts or stops, you can issue system command line tasks.
 
-This is primarily useful for home automations. For example: detecting music playing on an airplay dongle or AppleTV and then turning on your receiver (via a smart switch, or IR command). I use it with homebridge and an IR blaster to turn a nice vintage receiver on an off for airplay audio.
+This is primarily useful for home automations. For example: detecting music playing on an airplay dongle or AppleTV and then turning on your speakers (via a smart switch, or IR command). I use it with homebridge and an IR blaster to turn a nice vintage receiver on an off for airplay audio.
 
 ## Project progress
 
